@@ -271,9 +271,7 @@
     <script type="text/javascript" src="assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js"></script>
     <!-- END PAGE LEVEL PLUGINS -->
     <script src="assets/scripts/app.js"></script>
-    <script src="assets/scripts/form-components/information/add.js"></script>
-    <script src="assets/scripts/form-validation/user/add.js"></script>
-    <script src="assets/scripts/page/information/add.js"></script>
+    <script src="assets/scripts/form-validation/user.js"></script>
     <script src="https://cn.avoscloud.com/scripts/lib/av-0.3.7.min.js"></script>
     <script>
         
@@ -288,7 +286,7 @@
 		jQuery(document).ready(function () {
             App.init();
             App.setAssetsPath('assets');
-            //FormValidation.init();
+            FormValidation.init();
 			AV.initialize("y8cwz5xanjtclwys0cm6ucb07vrccr8oedicxznhcr9zwbwd", "bkzhoupdt3mjaze7y9kphdmguyxfjbp5nib9rmjtneyuwrk5");
 			
 			var chandleObj = AV.Object.extend("_User");

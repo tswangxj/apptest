@@ -233,7 +233,7 @@
         jQuery(document).ready(function () {
             App.init();
             App.setAssetsPath('assets');
-			TableEditable.init("video","video_edit.html"); 
+			TableEditable.init("video","video_edit.html",6); 
 
             //
             AV.initialize("y8cwz5xanjtclwys0cm6ucb07vrccr8oedicxznhcr9zwbwd", "bkzhoupdt3mjaze7y9kphdmguyxfjbp5nib9rmjtneyuwrk5");
@@ -246,11 +246,36 @@
 				
 				  success: function(user) {
 					var uname = user.get("username");
+					if(!uname){
+						uname = " ";
+					}
+					
 					channel.fetch({
 					  success: function(channel) {
 						var cname = channel.get("name");
+						if(!cname){
+							cname = " ";
+						}
+						var imageObj = object.get('image');
+						var image =" ";
+						if(imageObj){
+							image = imageObj.thumbnailURL(100, 100);						
+						}
+						var videoObj = object.get('video');
+						var video =" ";
+						if(videoObj){
+							video = videoObj.url();						
+						}
+						var title = channel.get("title");
+						if(!title){
+							title = " ";
+						}
+						var content = channel.get("content");
+						if(!content){
+							content = " ";
+						}
 						
-						oTable.fnAddData([object.id, uname, cname, "<img name='image' height='100px' width='100px' src='" + object.get('image').thumbnailURL(56, 100) + "'/>", "<video width='180px' height='180px' controls='controls'><source src='" + object.get('video').url() + "' type='video/mp4'></video>", object.get('title'), object.get('content'),
+						oTable.fnAddData([object.id, uname, cname, "<img name='image' height='100px' width='100px' src='" + image + "'/>", "<video width='180px' height='180px' controls='controls'><source src='" + video + "' type='video/mp4'></video>", title, content,
 							"<a href='javascript:;' class='btn yellow mini edit'><i class='icon-pencil'></i> Edit</a>" + "<a>&nbsp;</a>" +
 							"<a href='javascript:;' class='btn red mini delete'><i class='icon-trash'></i> Delete</a>"
 						]);

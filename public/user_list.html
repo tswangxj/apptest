@@ -229,7 +229,7 @@
         jQuery(document).ready(function () {
             App.init();
             App.setAssetsPath('assets');
-			TableEditable.init("_User","user_edit.html"); 
+			TableEditable.init("_User","user_edit.html",5); 
 
 
 		    AV.initialize("y8cwz5xanjtclwys0cm6ucb07vrccr8oedicxznhcr9zwbwd", "bkzhoupdt3mjaze7y9kphdmguyxfjbp5nib9rmjtneyuwrk5");
@@ -256,11 +256,30 @@
                 success: function (results) {
                     $("#add_form tbody").html("");
                     var oTable = $('#sample_editable_1').dataTable();
-                    //alert(oTable);
+                    
                     for (var i = 0; i < results.length; i++) {
                         var object = results[i];
-
-                        oTable.fnAddData([object.id, object.get('username'), object.get('email'), "<img name='image' height='100px' width='100px' src='" + object.get('image').thumbnailURL(100, 100) + "'/>", object.get('content'),
+						
+						var username = object.get('username');
+						if(!username){
+							username = " ";
+						}
+						var email = object.get('email');
+						if(!email){
+							email = " ";
+						}
+						var imageObj = object.get('image');
+						var image =" ";
+						if(imageObj){
+							image = imageObj.thumbnailURL(100, 100);						
+						}
+						var content = object.get('content');
+						if(!content){
+							content = " ";
+						}
+						
+						
+                        oTable.fnAddData([object.id, username, email, "<img name='image' height='100px' width='100px' src='" + image + "'/>", content,
                             "<a href='javascript:;' class='btn yellow mini edit'><i class='icon-pencil'></i> Edit</a>" + "<a>&nbsp;</a>" +
                             "<a href='javascript:;' class='btn red mini delete'><i class='icon-trash'></i> Delete</a>"
                         ]);

@@ -3,7 +3,7 @@
     return {
 
         //main function to initiate the module
-        init: function (db,url) {
+        init: function (db,url,index) {
 
             var oTable = $('#sample_editable_1').dataTable({
                 "aLengthMenu": [
@@ -11,7 +11,7 @@
                     [5, 15, 20, "All"] // change per page values here
                 ],
                 // set the initial value
-                "iDisplayLength": 5,
+                "iDisplayLength": 15,
                 "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
                 "sPaginationType": "bootstrap",
                 "oLanguage": {
@@ -25,7 +25,7 @@
                 },
                 "aoColumnDefs": [{
                     'bSortable': false,
-                    'aTargets': [4]
+                    'aTargets': [index]
                 }
                 ]
             });
