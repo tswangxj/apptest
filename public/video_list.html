@@ -242,8 +242,7 @@
 				var user = object.get("user_id");
 				var channel = object.get("channel_id");
 				
-				user.fetch({
-				
+				user.fetch({				
 				  success: function(user) {
 					var uname = user.get("username");
 					if(!uname){
@@ -256,6 +255,7 @@
 						if(!cname){
 							cname = " ";
 						}
+						
 						var imageObj = object.get('image');
 						var image =" ";
 						if(imageObj){
@@ -266,11 +266,11 @@
 						if(videoObj){
 							video = videoObj.url();						
 						}
-						var title = channel.get("title");
+						var title = object.get("title");
 						if(!title){
 							title = " ";
 						}
-						var content = channel.get("content");
+						var content = object.get("content");
 						if(!content){
 							content = " ";
 						}
