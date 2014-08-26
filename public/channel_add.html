@@ -105,12 +105,7 @@
                         <span class="title">视频管理</span>
 					</a>
 				</li>
-				<li >
-                    <a href="comment_list.html">
-                        <i class="icon-table"></i>
-                        <span class="title">评论管理</span>
-					</a>
-				</li>
+				
 				<li >
                     <a href="user_list.html">
                         <i class="icon-briefcase"></i>
@@ -196,7 +191,7 @@
                                                             <input id="videofile" type="file" class="default" accept="video/*" /></span>
                                                         <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">削除</a>
                                                     </div>
-													<h3><lable hidden="hidden" id="upimage" style="color:red;">Uploading</lable></h3>
+													<h4><lable hidden="hidden" id="upimage" style="color:red;">Uploading</lable></h4>
                                                 </div>
 
                                             </div>
@@ -298,12 +293,6 @@
 				return;
 			}
 			
-			var fVideoObj = $("#videofile")[0];						    
-			if (fVideoObj.files.length <= 0) {
-				alert("请选择视频文件");
-				return;
-			}
-		   
 		    $("#upimage").html("Uploading(image)");
 			$("#upimage").attr("hidden",false);
 			self.setInterval("clock()", 500);
@@ -313,31 +302,50 @@
 
 			var avFileImage = new AV.File("image.png", fImage);              
 			avFileImage.save().then(function () {					
-				//upload video
-				var fVideo = fVideoObj.files[0]; 
-				var avFileVideo = new AV.File("video.mp4", fVideo);
+			    //upload video
+
+			    var fVideoObj = $("#videofile")[0];						    
+			    if (fVideoObj.files.length > 0) {
+			    	var fVideo = fVideoObj.files[0]; 
+					var avFileVideo = new AV.File("video.mp4", fVideo);
 		  
-				$("#upimage").html("Uploading(video)");
-				avFileVideo.save().then(function () {
-					chandle.set("name", $('#name').val());  
-					chandle.set("image", avFileImage);
-					chandle.set("video", avFileVideo);
+					$("#upimage").html("Uploading(video)");
+					avFileVideo.save().then(function () {
+						chandle.set("name", $('#name').val());  
+						chandle.set("image", avFileImage);
+						chandle.set("video", avFileVideo);
 					
-					$("#upimage").html("Uploading(channel)....");
-					chandle.save(null, {
-						success: function (chandle) {
-							clearInterval();
-							location.href = "channel_list.html";
-						},
-						error: function (chandle, error) {
-							clearInterval();
-							alert('Failed to create new object, with error code: ' + error.description);
-						}
+						$("#upimage").html("Uploading(channel)....");
+						chandle.save(null, {
+							success: function (chandle) {
+								clearInterval();
+								location.href = "channel_list.html";
+							},
+							error: function (chandle, error) {
+								clearInterval();
+								alert('Failed to create new object, with error code: ' + error.description);
+							}
+						});
+					},function(error) {
+						clearInterval();
+						alert('Failed to create new object, with error code: ' + error.description);
 					});
-				},function(error) {
-					clearInterval();
-					alert('Failed to create new object, with error code: ' + error.description);
-				});							
+			    }
+			    else {
+			        chandle.set("name", $('#name').val());
+			        chandle.set("image", avFileImage);
+			        $("#upimage").html("Uploading(channel)....");
+			        chandle.save(null, {
+			            success: function (chandle) {
+			                clearInterval();
+			                location.href = "channel_list.html";
+			            },
+			            error: function (chandle, error) {
+			                clearInterval();
+			                alert('Failed to create new object, with error code: ' + error.description);
+			            }
+			        });
+			    }
 			},function(error) {
 				clearInterval();
 				alert('Failed to create new object, with error code: ' + error.description);
