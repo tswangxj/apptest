@@ -50,7 +50,7 @@
 		 		<h2>天下无贼</h2>
  		 </div>
 		 <div class="video">
-		 		<video width="100%" controls='controls' poster='assets/img/mockup/no-image.png' src='<%= message %>' type='video/mp4'></video>
+		 		<video width="100%" controls='controls' poster='assets/img/mockup/no-image.png' src='' type='video/mp4' id="videoid"></video>
  		 </div>
 		 <div class="content">
 		 		影片表现的一个有情有义、浪子回头的故事，是人性中善与恶的一次又一次的正面交锋，是沉睡心灵深处的良知被唤醒，并以血的代价寻找心灵家园的一次长途跋涉，是一趟重建人类尊严的艰苦旅行。影片里到处是贼，而淳朴敦厚的农民傻根却愿意相信“天下无贼”。这是一个多么易碎的好梦，一个多么容易破灭的理想。而正是这种痴人说梦的境界，最终改变了两个盗贼——王薄和王丽的命运，重新作出了他们的人生抉择。你可以不相信“天下无贼”，但你不能够怀疑善良和真诚的力量。[2] 
@@ -58,5 +58,25 @@
 包，后警察现身，将双方逮捕，黎叔和王薄、王丽均欲从车厢上逃走，却相遇。王丽先走后，王薄为保护傻根的钱与黎叔交手不敌，临终时意欲惊动警察，并发短信给王丽，安慰她没事，剧终黎叔被捕，钱归还于傻根。画面定格于王丽在甘南拉卜楞寺拜佛的那一幕。
  		 </div>
  	</div>
+	
+    <script src="https://cn.avoscloud.com/scripts/lib/av-0.4.1.min.js"></script>
+    <script>
+        jQuery(document).ready(function () {
+            //
+            AV.initialize("y8cwz5xanjtclwys0cm6ucb07vrccr8oedicxznhcr9zwbwd", "bkzhoupdt3mjaze7y9kphdmguyxfjbp5nib9rmjtneyuwrk5");
+			
+			var vClass = AV.Object.extend("video");
+			var query = new AV.Query(vClass);
+			query.get(<%= message %>, {
+			  success: function(obj) {
+				$("#videoid").attr("src",obj.url);
+			  },
+			  error: function(object, error) {
+				alert(222);
+			  }
+			});
+
+        });   
+    </script>	
 </body>
 </html>
