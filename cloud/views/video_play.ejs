@@ -67,7 +67,7 @@
 			
 			var vClass = AV.Object.extend("video");
 			var query = new AV.Query(vClass);
-			query.get(<%= message %>, {
+			query.get('<%= message %>', {
 			  success: function(obj) {
 				$("#videoid").attr("src",obj.url);
 			  },
