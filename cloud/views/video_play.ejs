@@ -8,7 +8,6 @@
 <head>
     <meta charset="utf-8" />
     <title>aaaa</title>
-    <script src="/Public/assets/plugins/jquery-1.10.1.min.js" type="text/javascript"></script>
     
     <style type="text/css">
     	body{
@@ -57,12 +56,12 @@
  		 </div>
  	</div>
 	
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="https://cn.avoscloud.com/scripts/lib/av-0.4.1.min.js"></script>
     <script>
         jQuery(document).ready(function () {
             //
             AV.initialize("y8cwz5xanjtclwys0cm6ucb07vrccr8oedicxznhcr9zwbwd", "bkzhoupdt3mjaze7y9kphdmguyxfjbp5nib9rmjtneyuwrk5");
-			
 			var vClass = AV.Object.extend("video");
 			var query = new AV.Query(vClass);
 			query.get('<%= message %>', {
@@ -88,7 +87,6 @@
 				}
 				
 			},error: function(object, error) {
-					alert(222);
 				}
 			});
 
