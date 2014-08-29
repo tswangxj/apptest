@@ -13,7 +13,7 @@ app.get('/hello', function(req, res) {
 });
 app.get('/video/*', function(req, res) {
   var vurl = req.params;
-  res.render('hello', { message: vurl });
+  res.render('video_play', { message: vurl });
 });
 // 最后，必须有这行代码来使 express 响应 HTTP 请求
 app.listen();
