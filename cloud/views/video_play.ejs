@@ -7,7 +7,7 @@
 <!-- BEGIN HEAD -->
 <head>
     <meta charset="utf-8" />
-    <title>aaaa</title>
+    <title>no video</title>
     
     <style type="text/css">
     	body{
@@ -48,7 +48,7 @@
 <body>
     <div class="page-container">
 		 <div class="title">
-		 		<h2 id="titleid"></h2>
+		 		<h2 id="titleid">no video</h2>
  		 </div>
 		 <div class="video">
 		 		<video width="100%" controls='controls' poster='assets/img/mockup/no-image.png' src='' type='video/mp4' id="videoid" autoplay="autoplay"></video>
@@ -81,6 +81,7 @@
 				var title = object.get('title');
 				if(title){
 					$('#titleid').text(title);
+					$('title').html(title);
 				}
 				
 				var content = object.get('content');
