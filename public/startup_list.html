@@ -155,8 +155,10 @@
                             </div>
                             <div class="portlet-body form" style="width: auto;">
                                 <div class="span2">
-                                    <img id="image" src="assets/img/mockup/avatar.png" alt="" style="width:200px;height:200px"/>                                    
-									</div>
+                                    <div>iPhone画像:<img id="image_iphone" src="assets/img/mockup/no-image.png" alt="" style="width:200px;height:200px"/></div>                               
+                                    <div>iPad画像:<img id="image_ipad" src="assets/img/mockup/no-image.png" alt="" style="width:200px;height:200px"/> </div>                                      
+								</div>
+
                                 <ul class="unstyled span9">
                                     <!--  <li><span class="span2 text-right">用户ID:</span> </li>-->
                                    
@@ -184,7 +186,7 @@
     <!-- BEGIN FOOTER -->
     <div class="footer">
         <div class="footer-inner">
-            2014 &copy; Appvisor stamp by mikosoft.
+            2014 &copy; amazine by mikosoft.
         </div>
         <div class="footer-tools">
             <span class="go-top">
@@ -239,7 +241,8 @@
                        // $('#titlename').text(object.get('name'));
                         //$('#img').attr("src", object.get('image'));
                        
-                        $('#image').attr("src", object.get('image').thumbnailURL(200, 200));
+                        $('#image_iphone').attr("src", object.get('image_iphone').thumbnailURL(200, 200));
+                        $('#image_ipad').attr("src", object.get('image_ipad').thumbnailURL(200, 200));
                         
                         $('#startdate').text(object.get('statr_date'));
                         $('#enddate').text(object.get('end_date'));
