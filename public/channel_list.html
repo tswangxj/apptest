@@ -227,47 +227,67 @@
 		   
 		   
 		    AV.initialize("y8cwz5xanjtclwys0cm6ucb07vrccr8oedicxznhcr9zwbwd", "bkzhoupdt3mjaze7y9kphdmguyxfjbp5nib9rmjtneyuwrk5");
-			var chandleObj = AV.Object.extend("channel");
-			var query = new AV.Query(chandleObj);
-			query.find({
-			  success: function(results) {
-				$("#add_form tbody").html("");
-				var oTable = $('#sample_editable_1').dataTable();
-				for (var i = 0; i < results.length; i++) {
-					var object = results[i];
+			function getData(sIndex)
+			{
+				var chandleObj = AV.Object.extend("channel");
+				var query = new AV.Query(chandleObj);
+	            query.skip(sIndex);
+	            query.limit(1000);
+				
+				query.find({
+				  success: function(results) {
+					$("#add_form tbody").html("");
+					var oTable = $('#sample_editable_1').dataTable();
+					for (var i = 0; i < results.length; i++) {
+						var object = results[i];
 
-					var name = object.get("name");
-					if(!name){
-						name = " ";
+						var name = object.get("name");
+						if(!name){
+							name = " ";
+						}
+						var imageObj_iphone = object.get('image_iphone');
+						var image_iphone =" ";
+						if(imageObj_iphone){
+							image_iphone = imageObj_iphone.thumbnailURL(100, 100);						
+						}
+						var imageObj_ipad = object.get('image_ipad');
+						var image_ipad =" ";
+						if(imageObj_ipad){
+							image_ipad = imageObj_ipad.thumbnailURL(100, 100);						
+						}
+						var videoObj = object.get('video');
+						var video =" ";
+						if(videoObj){
+							video = videoObj.url();						
+						}
+						
+						oTable.fnAddData([object.id, name, "<img name='image' height='100px' width='100px' src='" + image_iphone + "'/>", "<img name='image' height='100px' width='100px' src='" + image_ipad + "'/>","<video width='180px' height='180px' controls='controls'><source src='" + video + "' type='video/mp4'></video>",
+							"<a href='javascript:;' class='btn yellow mini edit'><i class='icon-pencil'></i> Edit</a>" + "<a>&nbsp;</a>" +
+							"<a href='javascript:;' class='btn red mini delete'><i class='icon-trash'></i> Delete</a>"
+						]);
 					}
-					var imageObj_iphone = object.get('image_iphone');
-					var image_iphone =" ";
-					if(imageObj_iphone){
-						image_iphone = imageObj_iphone.thumbnailURL(100, 100);						
-					}
-					var imageObj_ipad = object.get('image_ipad');
-					var image_ipad =" ";
-					if(imageObj_ipad){
-						image_ipad = imageObj_ipad.thumbnailURL(100, 100);						
-					}
-					var videoObj = object.get('video');
-					var video =" ";
-					if(videoObj){
-						video = videoObj.url();						
-					}
-					
-				    oTable.fnAddData([object.id, name, "<img name='image' height='100px' width='100px' src='" + image_iphone + "'/>", "<img name='image' height='100px' width='100px' src='" + image_ipad + "'/>","<video width='180px' height='180px' controls='controls'><source src='" + video + "' type='video/mp4'></video>",
-                        "<a href='javascript:;' class='btn yellow mini edit'><i class='icon-pencil'></i> Edit</a>" + "<a>&nbsp;</a>" +
-						"<a href='javascript:;' class='btn red mini delete'><i class='icon-trash'></i> Delete</a>"
-					]);
-				}
+				  },
+				  error: function(error) {
+					alert("Error: " + error.code + " " + error.message);
+				  }
+				});
+			}
+			
+            var vobj = AV.Object.extend("channel");
+            var vquery = new AV.Query(vobj);
+		 	vquery.count({
+			  success: function(count) {
+			    
+			    for(var i=0;i<count;i+= 1000)
+			    {
+			    	getData(i);
+			    }
 			  },
 			  error: function(error) {
-				alert("Error: " + error.code + " " + error.message);
+			    
 			  }
 			});
-          
-            
+           
 		});
 	</script>
 	<!-- END JAVASCRIPTS -->

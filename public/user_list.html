@@ -243,48 +243,66 @@
                 }
             });*/
 
-
-            var chandleObj = AV.Object.extend("_User");
-            var query = new AV.Query(chandleObj);
-            //alert(1111);
-            query.find({
-                success: function (results) {
-                    $("#add_form tbody").html("");
-                    var oTable = $('#sample_editable_1').dataTable();
-                    
-                    for (var i = 0; i < results.length; i++) {
-                        var object = results[i];
+			function getData(sIndex)
+			{
+				var chandleObj = AV.Object.extend("_User");
+				var query = new AV.Query(chandleObj);
+	            query.skip(sIndex);
+	            query.limit(1000);
+				
+				query.find({
+					success: function (results) {
+						$("#add_form tbody").html("");
+						var oTable = $('#sample_editable_1').dataTable();
 						
-						var username = object.get('username');
-						if(!username){
-							username = " ";
+						for (var i = 0; i < results.length; i++) {
+							var object = results[i];
+							
+							var username = object.get('username');
+							if(!username){
+								username = " ";
+							}
+							var email = object.get('email');
+							if(!email){
+								email = " ";
+							}
+							var imageObj = object.get('image');
+							var image =" ";
+							if(imageObj){
+								image = imageObj.thumbnailURL(100, 100);						
+							}
+							var content = object.get('content');
+							if(!content){
+								content = " ";
+							}
+							
+							
+							oTable.fnAddData([object.id, username, email, "<img name='image' height='100px' width='100px' src='" + image + "'/>", content,
+								"<a href='javascript:;' class='btn yellow mini edit'><i class='icon-pencil'></i> Edit</a>" + "<a>&nbsp;</a>" +
+								"<a href='javascript:;' class='btn red mini delete'><i class='icon-trash'></i> Delete</a>"
+							]);
 						}
-						var email = object.get('email');
-						if(!email){
-							email = " ";
-						}
-						var imageObj = object.get('image');
-						var image =" ";
-						if(imageObj){
-							image = imageObj.thumbnailURL(100, 100);						
-						}
-						var content = object.get('content');
-						if(!content){
-							content = " ";
-						}
-						
-						
-                        oTable.fnAddData([object.id, username, email, "<img name='image' height='100px' width='100px' src='" + image + "'/>", content,
-                            "<a href='javascript:;' class='btn yellow mini edit'><i class='icon-pencil'></i> Edit</a>" + "<a>&nbsp;</a>" +
-                            "<a href='javascript:;' class='btn red mini delete'><i class='icon-trash'></i> Delete</a>"
-                        ]);
-                    }
-                },
-                error: function (error) {
-                    alert("Error: " + error.code + " " + error.message);
-                }
-            });
-
+					},
+					error: function (error) {
+						alert("Error: " + error.code + " " + error.message);
+					}
+				});
+			}
+            var vobj = AV.Object.extend("_User");
+            var vquery = new AV.Query(vobj);
+		 	vquery.count({
+			  success: function(count) {
+			    
+			    for(var i=0;i<count;i+= 1000)
+			    {
+			    	getData(i);
+			    }
+			  },
+			  error: function(error) {
+			    
+			  }
+			});
+			
 
         });
     </script>

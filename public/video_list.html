@@ -284,11 +284,11 @@
 			function getData(sIndex)
 			{
 	           var vobj = AV.Object.extend("video");
-	            var vquery = new AV.Query(vobj);
-	            vquery.skip(sIndex);
-	            vquery.limit(1000);
+	            var query = new AV.Query(vobj);
+	            query.skip(sIndex);
+	            query.limit(1000);
 
-	 			vquery.find({
+	 			query.find({
 				    success: function(results) {
 						$("#add_form tbody").html("");				
 						var oTable = $('#sample_editable_1').dataTable();
