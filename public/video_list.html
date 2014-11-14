@@ -265,6 +265,7 @@
 						if(!title){
 							title = " ";
 						}
+						
 						var content = object.get("content");
 						if(!content){
 							content = " ";
@@ -280,20 +281,42 @@
 				});			
 			}
 			
+			function getData(sIndex)
+			{
+	           var vobj = AV.Object.extend("video");
+	            var vquery = new AV.Query(vobj);
+	            vquery.skip(sIndex);
+	            vquery.limit(1000);
+
+	 			vquery.find({
+				    success: function(results) {
+						$("#add_form tbody").html("");				
+						var oTable = $('#sample_editable_1').dataTable();
+						
+						for (var i = 0; i < results.length; i++) {					  
+							var object = results[i];
+							addTotable(object,oTable);
+						}
+				    },error: function(error) {
+						alert("Error: " + error.code + " " + error.message);
+					}
+				});
+				
+			}
+			
             var vobj = AV.Object.extend("video");
             var vquery = new AV.Query(vobj);
- 			vquery.find({
-			    success: function(results) {
-					$("#add_form tbody").html("");				
-					var oTable = $('#sample_editable_1').dataTable();
-					
-					for (var i = 0; i < results.length; i++) {					  
-						var object = results[i];
-						addTotable(object,oTable);
-					}
-			    },error: function(error) {
-					alert("Error: " + error.code + " " + error.message);
-				}
+		 	vquery.count({
+			  success: function(count) {
+			    
+			    for(var i=0;i<count;i+= 1000)
+			    {
+			    	getData(i);
+			    }
+			  },
+			  error: function(error) {
+			    
+			  }
 			});
         });   
     </script>
