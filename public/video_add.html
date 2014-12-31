@@ -348,28 +348,73 @@
 					alert("Error: " + error.code + " " + error.message);
 				  }
 				});	
-			});			
+			});		
 		});
-		
-		function clock(){
+	    //---------------------------------------------------------------
+		function getDurationFromSeconds(seconds)
+		{
+			var hours = Math.floor(seconds / 1200);
+			var minute = Math.floor((seconds -  hours * 1200) / 60);
+			var second = Math.floor(seconds - hours * 1200 - minute * 60);
+
+			var time = "";
+
+			if(minute > 0)
+			{
+				if(minute >9)
+					time += minute + ":" ; 
+				else
+					time += "0"+ minute + ":" ; 
+			}
+			else
+			{
+				time += "00:";
+			}
+
+			if(second > 0)
+			{
+				if(second >9)
+					time += second; 
+				else
+					time += "0"+ second; 
+			}
+			else
+			{
+				time += "00";
+			}
+
+			return time;
+		   
+		};
+		 //---------------------------------------------------------------
+		function clock()
+		{
 			var value = $("#upimage").html();
 			var index = value.indexOf(".");
-			if(index != -1){
-			//alert(value.length);
-				if(value.length - index >= 20){
+			if(index != -1)
+			{
+				if(value.length - index >= 20)
+				{
 					$("#upimage").html(value.substring(0,index));
-				}else{
+				}
+				else
+				{
 					$("#upimage").html(value + ".");
 				}
-			}else{
+			}
+			else
+			{
 				$("#upimage").html(value + ".");
-		   }
+			}
 		}
 
+	    //---------------------------------------------------------------
 		$('#ok').live('click', function (e) {
+			
 			var uobj = AV.Object.createWithoutData("_User", $('#username').val());
 			var cobj = AV.Object.createWithoutData("channel", $('#type').val());
 			
+			//alert( $('#audio_duration').attr("sduration"));return;
 			//save					
 			var fImageObj = $("#imagefile")[0];
 			if (fImageObj.files.length <= 0) {
@@ -382,89 +427,107 @@
 				alert("请选择视频文件");
 				return;
 			}
-		   
-		    $("#upimage").html("Uploading(image)");
+			
+				
+		    $("#upimage").html("Uploading(initialize)");
 			$("#upimage").attr("hidden",false);
+			
 			self.setInterval("clock()", 500);
 			
-			//upload image
-			var fImage = fImageObj.files[0];
-
-			var avFileImage = new AV.File("image.png", fImage);              
-			avFileImage.save().then(function () {
-				$("#upimage").html("Uploading(video)....");
-				// get upload token
-				var currentTS = (new Date()).valueOf().toString() + "000";
-		        var xmlhttp = {};
-		        if (window.XMLHttpRequest) {
-		            xmlhttp = new XMLHttpRequest();
-		        } else {
-		            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-		        }
-				xmlhttp.open("POST", "https://cn.avoscloud.com/1/qiniu");
-				xmlhttp.setRequestHeader("X-AVOSCloud-Application-Id", "y8cwz5xanjtclwys0cm6ucb07vrccr8oedicxznhcr9zwbwd");
-				xmlhttp.setRequestHeader("X-AVOSCloud-Application-Key", "bkzhoupdt3mjaze7y9kphdmguyxfjbp5nib9rmjtneyuwrk5");
-				xmlhttp.setRequestHeader("Accept", "application/json");
-				xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-				var xhrParams = {};
-				xhrParams["key"] = currentTS;
-				xhrParams["name"]=currentTS;
-				xhrParams["__type"]="File";
-				xhrParams["mime_type"]="video/mp4";
-				xhrParams["metaData"] = {"size": fVideoObj.files[0].size};
-				xmlhttp.send(JSON.stringify(xhrParams));
-				xmlhttp.onreadystatechange = function() {
-					if (xmlhttp.readyState == xmlhttp.DONE) {
-						var jsonRes = JSON.parse(xmlhttp.responseText);
-						var bucket = jsonRes.bucket;
-						var finalUrl = jsonRes.url;
-						var upToken = jsonRes.token;
-						var objId = jsonRes.objectId;
-						console.log("bucket:" + bucket + ", url:" + finalUrl + ", token:" + upToken + ", objectId:" + objId);
-						var fVideo = fVideoObj.files[0]; 
-						var videoBucket = new qiniu.bucket(bucket, {putToken: upToken});
-						videoBucket.putFile(currentTS, fVideo)
-						.then(function(reply){
-							$("#upimage").html("Generate(videodata)....");
-							var avQuery = new AV.Query("_File");
-							avQuery.get(objId, {
-								success: function(avFileVideo) {
-									var vclass = AV.Object.extend("video");
-									var videoObj = new vclass();
-									videoObj.set("user_id", uobj);
-									videoObj.set("channel_id", cobj);
-									videoObj.set("image", avFileImage);
-									videoObj.set("video", avFileVideo);
-									videoObj.set("title", $('#title').val());
-									videoObj.set("content", $('#content').val());
-									videoObj.save(null, {
-										success: function(video) {
-											$("#upimage").html("upload successed!")
-											clearInterval();
-											location.href = "video_list.html";
-										}, error: function(video, error) {
-											clearInterval();
-											alert('Failed to generate video record. code:' + error.description);
-							                }});
-								}, error: function(fileVideo, error) {
-									clearInterval();
-									alert('Failed to generate video record. code:' + error.description);
-							}});
-						},function(err){
-							clearInterval();
-							console.log("upload failed. error:" + err);
-						});
-					}
-				};
-				xmlhttp.addEventListener("error", function(e){
-					clearInterval();
-					console.log("Error: " + e);
-				}, false);
-								
-			},function(error) {
+			var audio = document.createElement("audio");
+			audio.src = URL.createObjectURL(fVideoObj.files[0]);
+			audio.load();
+			audio.error = function() 
+			{
 				clearInterval();
-				alert('Failed to create new object, with error code: ' + error.description);
-			});	
+				alert('get duration error!');
+				$("#upimage").attr("hidden",true);
+			}
+			audio.onloadedmetadata = function() 
+			{
+				var duration = getDurationFromSeconds(this.duration);
+				
+		    	$("#upimage").html("Uploading(image)");
+				//upload image
+				var fImage = fImageObj.files[0];
+
+				var avFileImage = new AV.File("image.png", fImage);              
+				avFileImage.save().then(function () {
+					$("#upimage").html("Uploading(video)....");
+					// get upload token
+					var currentTS = (new Date()).valueOf().toString() + "000";
+			        var xmlhttp = {};
+			        if (window.XMLHttpRequest) {
+			            xmlhttp = new XMLHttpRequest();
+			        } else {
+			            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			        }
+					xmlhttp.open("POST", "https://cn.avoscloud.com/1/qiniu");
+					xmlhttp.setRequestHeader("X-AVOSCloud-Application-Id", "y8cwz5xanjtclwys0cm6ucb07vrccr8oedicxznhcr9zwbwd");
+					xmlhttp.setRequestHeader("X-AVOSCloud-Application-Key", "bkzhoupdt3mjaze7y9kphdmguyxfjbp5nib9rmjtneyuwrk5");
+					xmlhttp.setRequestHeader("Accept", "application/json");
+					xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+					var xhrParams = {};
+					xhrParams["key"] = currentTS;
+					xhrParams["name"]=currentTS;
+					xhrParams["__type"]="File";
+					xhrParams["mime_type"]="video/mp4";
+					xhrParams["metaData"] = {"size": fVideoObj.files[0].size};
+					xmlhttp.send(JSON.stringify(xhrParams));
+					xmlhttp.onreadystatechange = function() {
+						if (xmlhttp.readyState == xmlhttp.DONE) {
+							var jsonRes = JSON.parse(xmlhttp.responseText);
+							var bucket = jsonRes.bucket;
+							var finalUrl = jsonRes.url;
+							var upToken = jsonRes.token;
+							var objId = jsonRes.objectId;
+							console.log("bucket:" + bucket + ", url:" + finalUrl + ", token:" + upToken + ", objectId:" + objId);
+							var fVideo = fVideoObj.files[0]; 
+							var videoBucket = new qiniu.bucket(bucket, {putToken: upToken});
+							videoBucket.putFile(currentTS, fVideo)
+							.then(function(reply){
+								$("#upimage").html("Generate(videodata)....");
+								var avQuery = new AV.Query("_File");
+								avQuery.get(objId, {
+									success: function(avFileVideo) {
+										var vclass = AV.Object.extend("video");
+										var videoObj = new vclass();
+										videoObj.set("user_id", uobj);
+										videoObj.set("channel_id", cobj);
+										videoObj.set("image", avFileImage);
+										videoObj.set("video", avFileVideo);
+										videoObj.set("title", $('#title').val());
+										videoObj.set("content", $('#content').val());
+										videoObj.set("duration", duration);
+										videoObj.save(null, {
+											success: function(video) {
+												$("#upimage").html("upload successed!")
+												clearInterval();
+												location.href = "video_list.html";
+											}, error: function(video, error) {
+												clearInterval();
+												alert('Failed to generate video record. code:' + error.description);
+								                }});
+									}, error: function(fileVideo, error) {
+										clearInterval();
+										alert('Failed to generate video record. code:' + error.description);
+								}});
+							},function(err){
+								clearInterval();
+								console.log("upload failed. error:" + err);
+							});
+						}
+					};
+					xmlhttp.addEventListener("error", function(e){
+						clearInterval();
+						console.log("Error: " + e);
+					}, false);
+									
+				},function(error) {
+					clearInterval();
+					alert('Failed to create new object, with error code: ' + error.description);
+				});	
+			}
 		});
     </script>
 
