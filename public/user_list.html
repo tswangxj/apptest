@@ -277,17 +277,23 @@
                 if(nowPageNum==1){
                     query.skip(0);
                     query.limit(10);
-                    $('#sample_editable_1_info').append(count+" 条中 第1 条 〜 第10 条");
+                    var scount = 0;
+                    var ecount = 10;
+                    
+                    if(count > 0) scount = 1;
+                    if(count < 10)ecount = count;
+                    
+                    $('#sample_editable_1_info').append(count+" 条中 第" + scount + " 条 〜 第" + ecount + " 条");
                 }else if(nowPageNum>=2 && nowPageNum<=(maxPageNum-1)){
                     var pageNum=(nowPageNum-1)*10;
                     query.skip(pageNum);
                     query.limit(10);
-                    $('#sample_editable_1_info').append(count+" 条中 第"+(pageNum+1)+" 条 〜 第"+(nowPageNum*10)+" 条");
+                    $('#sample_editable_1_info').append(count+" 条中 第" + (pageNum+1) + " 条 〜 第" + (nowPageNum*10) + " 条");
                 }else if(nowPageNum==maxPageNum){
                     var pageNum=(nowPageNum-1)*10;
                     query.skip(pageNum);
                     query.limit(count-pageNum);
-                    $('#sample_editable_1_info').append(count+" 条中 第"+(pageNum+1)+" 条 〜 第"+count+" 条");
+                    $('#sample_editable_1_info').append(count+" 条中 第" + (pageNum+1) + " 条 〜 第" + count + " 条");
                 }
 				
 				query.find({
